@@ -29,8 +29,14 @@ namespace InterfaceForDataBase
             if (sqlConnection.State == ConnectionState.Open)
             {
                 MessageBox.Show("Подключение установлено!");
-
+                
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SqlCommand command = new SqlCommand("CREATE TABLE Persons1 (ID int, LastName varchar(255))", sqlConnection);
+            command.ExecuteNonQuery();
         }
     }
 }
