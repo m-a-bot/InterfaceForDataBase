@@ -10,3 +10,4 @@ C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\obj\Debug\
 C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\obj\Debug\InterfaceForDataBase.csproj.CoreCompileInputs.cache
 C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\obj\Debug\InterfaceForDataBase.exe
 C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\obj\Debug\InterfaceForDataBase.pdb
+C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\obj\Debug\InterfaceForDataBase.AddTable.resources
