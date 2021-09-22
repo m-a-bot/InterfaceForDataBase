@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 namespace InterfaceForDataBase
 {
+
     public partial class AddTable : Form
     {
         public AddTable()
@@ -17,4 +18,5 @@ namespace InterfaceForDataBase
             InitializeComponent();
         }
     }
+
 }
