@@ -4,10 +4,10 @@ C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\bin\Debug\
 C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\bin\Debug\InterfaceForDataBase.exe
 C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\bin\Debug\InterfaceForDataBase.pdb
 C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\obj\Debug\InterfaceForDataBase.csproj.AssemblyReference.cache
-C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\obj\Debug\InterfaceForDataBase.Form1.resources
 C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\obj\Debug\InterfaceForDataBase.Properties.Resources.resources
 C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\obj\Debug\InterfaceForDataBase.csproj.GenerateResource.cache
 C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\obj\Debug\InterfaceForDataBase.csproj.CoreCompileInputs.cache
 C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\obj\Debug\InterfaceForDataBase.exe
 C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\obj\Debug\InterfaceForDataBase.pdb
 C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\obj\Debug\InterfaceForDataBase.AddTable.resources
+C:\Users\minne\source\repos\InterfaceForDataBase\InterfaceForDataBase\obj\Debug\InterfaceForDataBase.Form1.resources
