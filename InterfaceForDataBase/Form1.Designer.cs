@@ -72,13 +72,13 @@ namespace InterfaceForDataBase
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(325, 33);
+            this.button1.Location = new System.Drawing.Point(433, 28);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(183, 33);
+            this.button1.Size = new System.Drawing.Size(134, 33);
             this.button1.TabIndex = 3;
-            this.button1.Text = "Добавить таблицу";
+            this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
