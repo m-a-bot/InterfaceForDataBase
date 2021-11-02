@@ -4,7 +4,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Windows.Forms;
-
+using System.Collections.Generic;
+using System.Linq;
 
 namespace InterfaceForDataBase
 {
@@ -13,18 +14,13 @@ namespace InterfaceForDataBase
     {
         private SqlConnection sqlConnection;
         private SqlCommand command;
-        private SqlDataAdapter adapter;
-        private SqlCommandBuilder builder;
         private SqlDataReader reader;
-        private DataTable table;
-
-        private int IndexNewRow = -1;
-
+        
         private string NameTable = "";
-        int countColumns = 0;
-        int countRows;
-
-
+        private List<string> NamesHeaders = new List<string>();
+        private int countColumns = 0;
+        private int countRows;
+        private int IndexNewRow = -1;
 
         public Form1()
         {
@@ -32,15 +28,14 @@ namespace InterfaceForDataBase
             // Connection to the database
             string connectionString = ConfigurationManager.ConnectionStrings["DataBase"].ConnectionString;
             Connection(connectionString);
-            table = new DataTable();
             UpdateComboBox();
+            
         }
 
         private void Connection(string connectionString)
         {
-            sqlConnection = new SqlConnection(connectionString);
-
             // Open the connection
+            sqlConnection = new SqlConnection(connectionString);
             sqlConnection.Open();
         }
 
@@ -50,10 +45,6 @@ namespace InterfaceForDataBase
                 MessageBox.Show("Подключение не установлено!");  
         }
 
-        private void ExecuteRequest(string request)
-        {
-
-        }
         // Output all names of tables
         private void UpdateComboBox()
         {
@@ -74,49 +65,44 @@ namespace InterfaceForDataBase
             reader.Close();
         }
 
-        private void GetDataOfTable(string name)
+        private void UpdateTable(string name)
         {
-            dataGridView1.Columns.Clear();
-            table.Columns.Clear();
-
-            adapter = new SqlDataAdapter("Select * from " + name, sqlConnection);
-            builder = new SqlCommandBuilder(adapter);
-
-            builder.GetInsertCommand();
-            builder.GetUpdateCommand();
-            builder.GetDeleteCommand();
-
-            command = new SqlCommand("Select * from " + name, sqlConnection);
-            reader = command.ExecuteReader();
-
-            countColumns = reader.FieldCount;
-            countRows = 0;
-            dataGridView1.ColumnCount = countColumns+1;
-            
-
-            // Set the column header names
-            for (int i = 0; i < countColumns; i++)
+            if (name != "")
             {
-                string header = reader.GetName(i);
-                dataGridView1.Columns[i].Name = header;
-                table.Columns.Add(header);
-            }
-                
-            dataGridView1.Columns[countColumns].Name = "";
+                dataGridView1.Columns.Clear();
+                NamesHeaders.Clear();
 
-            // Set values of table
-            object[] ValueItems = new object[countColumns];
-            while(reader.Read())
-            {
+                command = new SqlCommand("Select * from " + name, sqlConnection);
+                reader = command.ExecuteReader();
+
+                countColumns = reader.FieldCount;
+                countRows = 0;
+                dataGridView1.ColumnCount = countColumns + 1;
+
+
+                // Set the column header names
                 for (int i = 0; i < countColumns; i++)
-                    ValueItems[i] = reader.GetValue(i);
-                dataGridView1.Rows.Add(ValueItems);
-                table.Rows.Add(ValueItems);
+                {
+                    string header = reader.GetName(i);
+                    dataGridView1.Columns[i].Name = header;
+                    NamesHeaders.Add(header);
+                }
 
-                dataGridView1[countColumns, countRows] = new DataGridViewLinkCell() { Value="delete"};
-                countRows++;
+                dataGridView1.Columns[countColumns].Name = "";
+
+                // Set values of table
+                object[] ValueItems = new object[countColumns];
+                while (reader.Read())
+                {
+                    for (int i = 0; i < countColumns; i++)
+                        ValueItems[i] = reader.GetValue(i);
+                    dataGridView1.Rows.Add(ValueItems);
+
+                    dataGridView1[countColumns, countRows] = new DataGridViewLinkCell() { Value = "delete" };
+                    countRows++;
+                }
+                reader.Close();
             }
-            reader.Close();
         }
 
          
@@ -127,7 +113,7 @@ namespace InterfaceForDataBase
             if (select != -1)
             {
                 NameTable = (string)comboBox1.Items[select];
-                GetDataOfTable(NameTable);
+                UpdateTable(NameTable);
             }
         }
 
@@ -143,6 +129,10 @@ namespace InterfaceForDataBase
 
         private void dataGridView1_UserAddedRow(object sender, DataGridViewRowEventArgs e)
         {
+            if (e.Row.Index - 2 >= 0)
+                dataGridView1[0, e.Row.Index - 1].Value = (int)(dataGridView1[0, e.Row.Index - 2].Value) + 1;
+            else
+                dataGridView1[0, e.Row.Index - 1].Value = 1;
             dataGridView1[countColumns, IndexNewRow = e.Row.Index - 1] = new DataGridViewLinkCell{ Value = "insert" };
             dataGridView1.AllowUserToAddRows = false;
         }
@@ -154,55 +144,68 @@ namespace InterfaceForDataBase
             if (e.ColumnIndex == countColumns)
             {
                 string value = dataGridView1[e.ColumnIndex, e.RowIndex].Value.ToString();
+                int id = (int)dataGridView1[0, e.RowIndex].Value;
+                List<string> v = new List<string>();
+                for (int i = 0; i < dataGridView1.Rows[e.RowIndex].Cells.Count - 1; i++)
+                {
+                    object vl = dataGridView1.Rows[e.RowIndex].Cells[i].Value;
+                    string r;
+                    if (vl is int)
+                        r = vl.ToString();
+                    else
+                        r = "'" + vl.ToString() + "'";
+                    
+                    v.Add(r);
+                }
+                string values = string.Join(", ", v);
+                string h = string.Join(", ", NamesHeaders);
+                string couples = "";
+                for (int i = 1; i < NamesHeaders.Count - 1; i++)
+                {
+                    couples += NamesHeaders[i] + " = " + v[i] + ",";
+                }
+                couples += NamesHeaders[NamesHeaders.Count - 1] + " = " + v[NamesHeaders.Count - 1];
+
+
                 if (value is "delete")
                 {
                     dataGridView1.Rows.RemoveAt(e.RowIndex);
-                    table.Rows.RemoveAt(e.RowIndex);
-                    
-                    
+                    command = new SqlCommand($"delete from {NameTable} where ID = {id}", sqlConnection);
                 }
                 if (value is "update")
                 {
-                    DataGridViewCellCollection collectionRow = dataGridView1.Rows[e.RowIndex].Cells;
-                    //collectionRow[e.ColumnIndex].Value = "delete";
-                    dataGridView1[countColumns, e.RowIndex] = new DataGridViewLinkCell() { Value = "delete" };
-                    SetRow(table.Rows[e.RowIndex], collectionRow, e.RowIndex); 
+                    command = new SqlCommand($"update {NameTable} set {couples} where ID = {id}", sqlConnection);
                 }
                 if (value is "insert")
                 {
-                    dataGridView1[e.ColumnIndex, e.RowIndex].Value = "delete";
                     dataGridView1.AllowUserToAddRows = true;
                     IndexNewRow = -1;
-                    DataRow dataRow = table.NewRow();
-                    DataGridViewCellCollection collectionRow = dataGridView1.Rows[e.RowIndex].Cells;
-                    table.Rows.Add(SetRow(dataRow,collectionRow, e.RowIndex));
+                    command = new SqlCommand($"set identity_insert {NameTable} on; insert into {NameTable} ({h}) values ({values}); set identity_insert {NameTable} off;", sqlConnection);
+                }
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception)
+                {
 
                 }
-
+                
+                
+                UpdateTable(NameTable); 
             }
         }
 
-        private DataRow SetRow(DataRow dataRow, DataGridViewCellCollection collectionRow, int indexRow)
+        private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            for (int i=0; i< collectionRow.Count - 1; i++)
+            if (dataGridView1.CurrentCell.ColumnIndex == 0)
             {
-                dataRow[i] = collectionRow[i].Value;
+                dataGridView1.CurrentCell.ReadOnly = true;
             }
-            return dataRow;
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            StreamWriter writer = new StreamWriter("res.txt");
-            foreach(DataRow row in table.Rows)
+            else
             {
-                for (int i = 0; i < table.Columns.Count; i++)
-                    writer.Write(row[i] + "\t");
-                writer.WriteLine();
+                dataGridView1.CurrentCell.ReadOnly = false;
             }
-            writer.Close();
-            
         }
-        
     }
 }
