@@ -16,14 +16,11 @@ namespace InterfaceForDataBase
         private SqlCommand command;
         private SqlDataReader reader;
         
-        private int IndexNewRow = -1;
-
         private string NameTable = "";
         private List<string> NamesHeaders = new List<string>();
-        int countColumns = 0;
-        int countRows;
-
-
+        private int countColumns = 0;
+        private int countRows;
+        private int IndexNewRow = -1;
 
         public Form1()
         {
@@ -32,12 +29,13 @@ namespace InterfaceForDataBase
             string connectionString = ConfigurationManager.ConnectionStrings["DataBase"].ConnectionString;
             Connection(connectionString);
             UpdateComboBox();
+            dataGridView1.KeyDown += (s, e) => { };
         }
 
         private void Connection(string connectionString)
         {
-            sqlConnection = new SqlConnection(connectionString);
             // Open the connection
+            sqlConnection = new SqlConnection(connectionString);
             sqlConnection.Open();
         }
 
@@ -188,6 +186,6 @@ namespace InterfaceForDataBase
                 
                 UpdateTable(NameTable); 
             }
-        }  
+        }
     }
 }
