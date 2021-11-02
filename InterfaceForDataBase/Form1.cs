@@ -147,50 +147,46 @@ namespace InterfaceForDataBase
             {
                 string value = dataGridView1[e.ColumnIndex, e.RowIndex].Value.ToString();
                 int id = (int)dataGridView1[0, e.RowIndex].Value;
-                
+                List<string> v = new List<string>();
+                for (int i = 0; i < dataGridView1.Rows[e.RowIndex].Cells.Count - 1; i++)
+                {
+                    object vl = dataGridView1.Rows[e.RowIndex].Cells[i].Value;
+                    string r;
+                    if (vl is int)
+                        r = vl.ToString();
+                    else
+                        r = "'" + vl.ToString() + "'";
+                    
+                    v.Add(r);
+                }
+                string values = string.Join(", ", v);
+                string h = string.Join(", ", NamesHeaders);
+                string couples = "";
+                for (int i = 1; i < NamesHeaders.Count - 1; i++)
+                {
+                    couples += NamesHeaders[i] + " = " + v[i] + ",";
+                }
+                couples += NamesHeaders[NamesHeaders.Count - 1] + " = " + v[NamesHeaders.Count - 1];
+
+
                 if (value is "delete")
                 {
                     dataGridView1.Rows.RemoveAt(e.RowIndex);
                     command = new SqlCommand($"delete from {NameTable} where ID = {id}", sqlConnection);
-                    command.ExecuteNonQuery();
                 }
-                
-                List<string> v = new List<string>();
-                string num = "0123456789";
-                for (int i = 1; i < dataGridView1.Rows[e.RowIndex].Cells.Count; i++)
-                {
-                    string r = (string)dataGridView1.Rows[e.RowIndex].Cells[i].Value;
-                    v.Add(num.Contains(r[0]) ? r : r = "'" + r + "'");
-                }
-                string values = string.Join(", ", v);
-                string h = string.Join(", ", NamesHeaders);
                 if (value is "update")
                 {
-                    //dataGridView1[countColumns, e.RowIndex] = new DataGridViewLinkCell() { Value = "delete" };
-                    //string couples = "";
-                    //for (int i=0; i<dataGridView1.Rows[e.RowIndex].Cells.Count; i++)
-                    //{
-
-                    //}
-                    //command = new SqlCommand($"update {NameTable} where ID = {id}", sqlConnection);
-                    //command.ExecuteNonQuery();
-                    /*
-                     update Persons1
-                        set LastName='rrrrsss', Type='sd'
-                        where ID = 3
-                     */
+                    command = new SqlCommand($"update {NameTable} set {couples} where ID = {id}", sqlConnection);
                 }
                 if (value is "insert")
                 {
-                    //dataGridView1[e.ColumnIndex, e.RowIndex].Value = "delete";
                     dataGridView1.AllowUserToAddRows = true;
                     IndexNewRow = -1;
-                    command = new SqlCommand($"insert into {NameTable} ({h}) values ({values})", sqlConnection);
-                    command.ExecuteNonQuery();
-
-                    // insert into Persons1 values ('p1', 1223, 'r1rr') 
+                    command = new SqlCommand($"set identity_insert {NameTable} on; insert into {NameTable} ({h}) values ({values}); set identity_insert {NameTable} off;", sqlConnection);
                 }
-                UpdateTable(NameTable);
+                command.ExecuteNonQuery();
+                
+                UpdateTable(NameTable); 
             }
         }  
     }
