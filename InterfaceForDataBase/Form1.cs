@@ -29,7 +29,7 @@ namespace InterfaceForDataBase
             string connectionString = ConfigurationManager.ConnectionStrings["DataBase"].ConnectionString;
             Connection(connectionString);
             UpdateComboBox();
-            dataGridView1.KeyDown += (s, e) => { };
+            
         }
 
         private void Connection(string connectionString)
@@ -182,9 +182,29 @@ namespace InterfaceForDataBase
                     IndexNewRow = -1;
                     command = new SqlCommand($"set identity_insert {NameTable} on; insert into {NameTable} ({h}) values ({values}); set identity_insert {NameTable} off;", sqlConnection);
                 }
-                command.ExecuteNonQuery();
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception)
+                {
+
+                }
+                
                 
                 UpdateTable(NameTable); 
+            }
+        }
+
+        private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            if (dataGridView1.CurrentCell.ColumnIndex == 0)
+            {
+                dataGridView1.CurrentCell.ReadOnly = true;
+            }
+            else
+            {
+                dataGridView1.CurrentCell.ReadOnly = false;
             }
         }
     }
