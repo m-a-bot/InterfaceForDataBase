@@ -64,7 +64,8 @@ namespace InterfaceForDataBase
             }
             reader.Close();
         }
-
+        
+        // Заполнение dataGridView данными из таблицы name
         private void UpdateTable(string name)
         {
             if (name != "")
@@ -97,7 +98,7 @@ namespace InterfaceForDataBase
                     for (int i = 0; i < countColumns; i++)
                         ValueItems[i] = reader.GetValue(i);
                     dataGridView1.Rows.Add(ValueItems);
-
+                    
                     dataGridView1[countColumns, countRows] = new DataGridViewLinkCell() { Value = "delete" };
                     countRows++;
                 }
