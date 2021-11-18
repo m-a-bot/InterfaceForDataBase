@@ -46,6 +46,7 @@ namespace InterfaceForDataBase
         }
 
         // Output all names of tables
+       // Жулик не воруй!
         private void UpdateComboBox()
         {
             command = new SqlCommand("Select * From sys.tables", sqlConnection);
@@ -64,6 +65,28 @@ namespace InterfaceForDataBase
             }
             reader.Close();
         }
+        
+        /*
+        ........................................
+        .......:++-..:.-:-......................
+        ........+%%%%%+++:......................
+        ..:---..+:*=**+%=-=%%+..................
+        ..==::::::*+=++***-=%=..................
+        .....-***::*:****:......................
+        .....--..:**++++**......................
+        ...........*+*=::++*-...................
+        .........:=@%%@%+@%%%+:...-**++*:-......
+        .........*:-+%:*+@@::...:+********+:....
+        ............*::-:*.....******++++**::...
+        ............*::::*....*****++++++**::-..
+        ............*-:::*...******++***+*::::..
+        ............*----+..:*****+******:::::..
+        ............*:-::*:**+*********:--::::-.
+        ..........****:::***+********........-..
+        ..........-***:-*+*++******.............
+        ...........**....-+*:::-................
+        .   .....-:-.......-:...................
+        */
         
         // Заполнение dataGridView данными из таблицы name
         private void UpdateTable(string name)
@@ -108,6 +131,7 @@ namespace InterfaceForDataBase
 
          
         //selecting a certain table
+        // 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             int select = comboBox1.SelectedIndex;
@@ -139,7 +163,7 @@ namespace InterfaceForDataBase
         }
 
         
-
+        // Не ходи туда, там тебя ждут неприятности!
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex == countColumns)
@@ -147,6 +171,8 @@ namespace InterfaceForDataBase
                 string value = dataGridView1[e.ColumnIndex, e.RowIndex].Value.ToString();
                 int id = (int)dataGridView1[0, e.RowIndex].Value;
                 List<string> v = new List<string>();
+                
+                // Считывание ячеек из выбранного ряда в dataGridView
                 for (int i = 0; i < dataGridView1.Rows[e.RowIndex].Cells.Count - 1; i++)
                 {
                     object vl = dataGridView1.Rows[e.RowIndex].Cells[i].Value;
@@ -161,6 +187,8 @@ namespace InterfaceForDataBase
                 string values = string.Join(", ", v);
                 string h = string.Join(", ", NamesHeaders);
                 string couples = "";
+                
+                // (column_name=значение, ...)
                 for (int i = 1; i < NamesHeaders.Count - 1; i++)
                 {
                     couples += NamesHeaders[i] + " = " + v[i] + ",";
@@ -196,7 +224,7 @@ namespace InterfaceForDataBase
                 UpdateTable(NameTable); 
             }
         }
-
+        // запрет изменения столбца Id
         private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             if (dataGridView1.CurrentCell.ColumnIndex == 0)
